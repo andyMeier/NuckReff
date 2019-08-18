@@ -124,7 +124,7 @@ export class Reference implements IReference {
       obj.theoryDescr.toString() + delimiter +
       Reference.serialise(obj.keywords) + delimiter +
       obj.collapseExtraInfos.toString() + delimiter +
-      obj.group.toString() + '\n''\n'
+      obj.group.toString() + '\n'
   }
 
   static serialise(ar, delimiter = ';') {

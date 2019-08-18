@@ -83,6 +83,18 @@
 
   <h1>REFERENCE BASE</h1>
   <hr/>
+  <div class="row">
+    <div class="col-md-2">
+      <h5>Group: {{currentGroup}}</h5>
+    </div>
+    <div class="col-md-10">
+      <button *ngFor="let g of groups" type="button" class="btn btn-outline-secondary" id="allGroups"
+              (click)="changeGroup(g)">{{g}}</button>
+      <button type="button" class="btn btn-outline-secondary" id="addGroup"
+              (click)="addGroup()">+</button>
+    </div>
+  </div>
+  <hr/>
   <hr/>
 
   <div class="row">
@@ -112,7 +124,7 @@
 
   <div *ngFor="let ref of references" name="availableReferencesDiv">
 
-    <div class="row">
+    <div class="row" *ngIf="ref.group==currentGroup">
       <div class="col-md-1">
         <p *ngIf="ref.collapseExtraInfos==0">{{ref.id}}</p>
         <h5 *ngIf="ref.collapseExtraInfos!=0">{{ref.id}}</h5>
@@ -151,7 +163,7 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row" *ngIf="ref.group==currentGroup">
       <div class="col-md-4 offset-md-3">
           <span *ngFor="let k of ref.keywords" class="badge badge-dark">{{k}}</span><p>  </p>
       </div>
@@ -292,15 +304,20 @@
           <hr/>
 
           <div class="form-row">
-            <div class="col md-3">
+            <div class="col md-2">
               <label for="newRef_year">Year</label>
               <input type="text" class="form-control" id="newRef_year"
                      [(ngModel)]="newReference.year" name="newRef_year" placeholder="1900">
             </div>
-            <div class="col md-3">
+            <div class="col md-2">
               <label for="newRef_numPage"># of Pages</label>
               <input type="text" class="form-control" id="newRef_numPage"
                      [(ngModel)]="newReference.numPage" name="newRef_numPage" placeholder="4">
+            </div>
+            <div class="col md-2">
+              <label for="newRef_group">Group</label>
+              <input type="text" class="form-control" id="newRef_group"
+                     [(ngModel)]="newReference.group" name="newRef_group" placeholder="4">
             </div>
             <div class="col md-6">
               <label for="newRef_firstAuthor">First Author Last Name</label>

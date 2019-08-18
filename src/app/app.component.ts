@@ -25,6 +25,9 @@ constructor(private http: HttpClient) {
   indexAll: Array<number> = [];
   references: Array<IReference> = [];
   newReference = new Reference (-1, '', '', '', 1900, '', 0, 'rainyDay', 0, '', '', '', '', '', '', '', '', '', '', ["", "", "", ""], 0, 0);
+  currentGroup = 0;
+  groups = [0];
+
 
 
   fileChanged(e) {
@@ -164,6 +167,14 @@ constructor(private http: HttpClient) {
     } else {
       this.references[this.getIndexInArrayByID(id)].collapseExtraInfos = 0;
     }
+  }
+
+  addGroup () {
+    this.groups.push(this.groups[this.groups.length-1]+1);
+  }
+
+  changeGroup (g) {
+    if (this.groups.includes(g)) this.currentGroup = g;
   }
 
   modifyReference (id) {
