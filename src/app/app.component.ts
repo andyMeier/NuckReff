@@ -24,8 +24,7 @@ constructor(private http: HttpClient) {
   loadResult: boolean = false;
   indexAll: Array<number> = [];
   references: Array<IReference> = [];
-  newReference = new Reference (-1, '', '', '', 1900, '', 0, 'rainyDay', 0, '', '', '', '', '', '', '', '', '', '', []);
-
+  newReference = new Reference (-1, '', '', '', 1900, '', 0, 'rainyDay', 0, '', '', '', '', '', '', '', '', '', '', ["", "", "", ""], 0);
 
 
   fileChanged(e) {
@@ -38,7 +37,7 @@ constructor(private http: HttpClient) {
       let notInDbReferences: Array<IReference> = this.references.filter(q => res.filter(q1 => q1.id == q.id).length == 0);
       let allRs = res.concat(notInDbReferences).map(refs => Reference.stringify(<Reference>refs));
       const blob = new Blob(allRs, {type: "text/plain;charset=utf-8"});
-      FileSaver.saveAs(blob, "NuckReffFile_" + new Date().toLocaleString() + ".txt");
+      FileSaver.saveAs(blob, "NuckReffFile_" + this.name.toString() + "_" + new Date().toLocaleString() + ".txt");
     }, err => {
       throw err;
     });
@@ -71,15 +70,22 @@ constructor(private http: HttpClient) {
     fileReader.readAsText(this.file);
   }
 
-  uploadEmpty () {
+  uploadLocal () {
     if (this.resetDB) db.references.clear();
-    this.result = "";
-      this.copyFromDBToArray ();
+    this.result = "asd";
+    this.copyFromDBToArray ();
   }
+
+  uploadEmpty () {
+      db.references.clear();
+      this.result = "asd";
+    }
 
   copyFromDBToArray () {
     // get the references that are in the db but not in the array to be added to the array for display on interface
     db.references.toArray().then(res => {
+      console.log('successfully started copyFromDBToArray');
+      console.log('elements in db:', res.length);
       res.forEach(element => {
         if (!this.indexAll.includes(element.id)) {
           this.references.push(element);
@@ -87,6 +93,7 @@ constructor(private http: HttpClient) {
         }
       });
     }, err => {
+      console.log('error in copyFromDBToArray');
       throw err;
     });
   }
@@ -116,7 +123,7 @@ constructor(private http: HttpClient) {
       return line.split('$$$');
     });
 
-    lines.filter(line => (line.length == 20) ).forEach(line => {
+    lines.filter(line => (line.length == 21) ).forEach(line => {
       let ind = 0;
       const id: number = +line[ind];
       const apaRef: string = line[++ind];
@@ -138,8 +145,9 @@ constructor(private http: HttpClient) {
       const findDescr: string = line[++ind];
       const theoryDescr: string = line[++ind];
       const keywords: Array<string> = line[++ind].split(';');
+      const collapseExtraInfos: number = +line[++ind];
 
-      const currReference = new Reference(id, apaRef, bibtexRef, title, year, firstAuthor, numPage, status, printed, pdfLink, conference, goalDescr, studyDescr, studySetupDescr, studyParticipantsDescr, studyMetricsDescr, studyCaseDescr, findDescr, theoryDescr, keywords);
+      const currReference = new Reference(id, apaRef, bibtexRef, title, year, firstAuthor, numPage, status, printed, pdfLink, conference, goalDescr, studyDescr, studySetupDescr, studyParticipantsDescr, studyMetricsDescr, studyCaseDescr, findDescr, theoryDescr, keywords, collapseExtraInfos);
       this.references.push(currReference); // add to array
       this.indexAll.push(id); // add id to list of ids
       this.refDB_AddUpdate(currReference); // add to db
@@ -148,10 +156,19 @@ constructor(private http: HttpClient) {
     console.log("done")
   }
 
+  collapseExtraInfos (id) {
+    let currentCollapseState = this.references[id].collapseExtraInfos;
+    if (currentCollapseState==0) {
+      this.references[id].collapseExtraInfos = 1;
+    } else {
+      this.references[id].collapseExtraInfos = 0;
+    }
+  }
+
   addNewReference () {
     let nextIndex: number = -1;
     for (let i = 0; i < this.indexAll.length+1; i += 1) {
-      if (this.indexAll.includes(i)) {
+      if (!this.indexAll.includes(i)) {
         nextIndex = i;
       }
     }
@@ -159,18 +176,21 @@ constructor(private http: HttpClient) {
       this.newReference.id = nextIndex;
       this.references.push(this.newReference);
       this.indexAll.push(nextIndex);
+      this.refDB_AddUpdate(this.newReference, true);
     }
-    this.newReference = new Reference (-1, '', '', '', 1900, '', 0, 'rainyDay', 0, '', '', '', '', '', '', '', '', '', '', []);
+    this.newReference = new Reference (-1, '', '', '', 1900, '', 0, 'rainyDay', 0, '', '', '', '', '', '', '', '', '', '', ["", "", "", ""], 0);
   }
 
   refDB_AddUpdate(refElem: Reference, update = true) {
-
     let k = db.references.get(refElem.id).then(res => {
+      console.log('checking db for reference with id', refElem.id);
       if (!res) {
+        console.log('no datapoint with matching id found in db')
         db.references.put(refElem).then(r => {
           console.log("put element in db ", refElem.id)
         });
       } else {
+        console.log('reference with matching id found in db, updating reference')
         db.references.update(refElem.id, refElem).then(
           () => {
             console.log('updated question', refElem.id);
@@ -180,7 +200,6 @@ constructor(private http: HttpClient) {
           });
       }
     });
-
   }
 
   exportData () {

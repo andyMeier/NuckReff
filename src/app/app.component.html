@@ -1,9 +1,18 @@
 <!-- Navigation Bar -->
 <nav class="navbar navbar-dark bg-dark" id="top-section">
-  <a class="navbar-brand" href="#"><img src="assets/logo.png" width="32" height="32" alt="AnnoTool"> Annotation Tool</a>
+  <a class="navbar-brand" href="#"><img src="assets/logo.png" width="32" height="32" alt="AnnoTool"> NuckReff Reference Handler</a>
   <span class="navbar-text" *ngIf="result && name">
     <h3>You are logged in: {{name}}</h3>
   </span>
+
+  <span class="navbar-text" *ngIf="result && name">
+    <a class="btn btn-secondary" (click)="exportData()" id="exportData_Button">Export NuckReffFile</a>
+  </span>
+
+  <span class="navbar-text" *ngIf="result && name">
+
+  </span>
+
 </nav>
 <hr/>
 
@@ -38,16 +47,23 @@
     </div>
     <hr/>
 
-    <button [attr.disabled]="name.length<=0 ? true: null"
-            type="button" class="btn btn-danger" id="fileuploadbutton" (click)="uploadDocument()">
-      <span class="spinner-border spinner-border-sm" role="status" *ngIf="loadResult"></span>
-      <span *ngIf="!loadResult">Open Your References</span>
-    </button>
-    <hr/>
-    <hr/>
-    <button type="button" class="btn btn-danger" id="fileuploadbutton" (click)="uploadEmpty()">
-      <span *ngIf="!loadResult">Open Empty NuckReff Base</span>
-    </button>
+    <div>
+      <button [attr.disabled]="name.length<=0 ? true: null"
+              type="button" class="btn btn-danger mx-2" id="fileuploadbutton" (click)="uploadDocument()">
+        <span class="spinner-border spinner-border-sm" role="status" *ngIf="loadResult"></span>
+        <span *ngIf="!loadResult">Open Your References from File</span>
+      </button>
+
+      <button [attr.disabled]="name.length<=0 ? true: null"
+              type="button" class="btn btn-danger mx-2" id="openLocalBase" (click)="uploadLocal()">
+        <span *ngIf="!loadResult">Open Local NuckReff Base</span>
+      </button>
+
+      <button [attr.disabled]="name.length<=0 ? true: null"
+              type="button" class="btn btn-danger mx-2" id="openEmptyBase" (click)="uploadEmpty()">
+        <span *ngIf="!loadResult">Open Empty NuckReff Base</span>
+      </button>
+    </div>
 
   </div>
 </div>
@@ -56,28 +72,355 @@
 <!-- Annotation Content -->
 <div class="container" *ngIf="result && name">
   <hr/>
+  <hr/>
+  <hr/>
 
-  <form>
-    <div class="form-group">
-      <label for="newReference_Title">Title</label>
-      <input type="text" class="form-control" id="newReference_Title" [(ngModel)]="newReference.title">
-    </div>
-    <div class="form-group">
-      <label for="newReference_Year">Year</label>
-      <input type="text" class="form-control" id="newReference_Year" [(ngModel)]="newReference.year">
-    </div>
-    <div class="form-group">
-      <label for="newReference_APA">APA Reference</label>
-      <input type="text" class="form-control" id="newReference_APA" [(ngModel)]="newReference.apaRef">
-    </div>
-  </form>
+  <!-- Todo: Show statistics about Reference Base -->
 
-  <div class="row" *ngFor="let ref of references" name="availableReferencesDiv">
-    {{ref.id}}, {{ref.title}}, {{ref.year}}, {{ref.firstAuthor}}
+  <hr/>
+  <hr/>
+  <hr/>
+
+  <h1>REFERENCE BASE</h1>
+  <hr/>
+  <hr/>
+
+  <div class="row">
+    <div class="col-md-1">
+      <h5>ID</h5>
+    </div>
+    <div class="col-md-4">
+      <h5>TITLE</h5>
+    </div>
+    <div class="col-md-1">
+      <h5>YEAR</h5>
+    </div>
+    <div class="col-md-2">
+      <h5>FIRST AUTHOR</h5>
+    </div>
+    <div class="col-md-1">
+      <h5>#PAGES</h5>
+    </div>
+    <div class="col-md-1">
+      <h5>STATUS</h5>
+    </div>
+    <div class="col-md-1 offset-md-1">
+      <h5>PDF</h5>
+    </div>
+  </div>
+  <hr/>
+
+  <div *ngFor="let ref of references" name="availableReferencesDiv">
+
+    <div class="row">
+      <div class="col-md-1">
+        <p *ngIf="ref.collapseExtraInfos==0">{{ref.id}}</p>
+        <h5 *ngIf="ref.collapseExtraInfos!=0">{{ref.id}}</h5>
+      </div>
+      <div class="col-md-4">
+        <p *ngIf="ref.collapseExtraInfos==0">{{ref.title}}</p>
+        <h5 *ngIf="ref.collapseExtraInfos!=0">{{ref.title}}</h5>
+      </div>
+      <div class="col-md-1">
+        <p *ngIf="ref.collapseExtraInfos==0">{{ref.year}}</p>
+        <h5 *ngIf="ref.collapseExtraInfos!=0">{{ref.year}}</h5>
+      </div>
+      <div class="col-md-2">
+        <p *ngIf="ref.collapseExtraInfos==0">{{ref.firstAuthor}}</p>
+        <h5 *ngIf="ref.collapseExtraInfos!=0">{{ref.firstAuthor}}</h5>
+      </div>
+      <div class="col-md-1">
+        <p *ngIf="ref.collapseExtraInfos==0">{{ref.numPage}}</p>
+        <h5 *ngIf="ref.collapseExtraInfos!=0">{{ref.numPage}}</h5>
+      </div>
+      <div class="col-md-1">
+        <span *ngIf="ref.status=='read'" class="badge badge-success">read</span>
+        <span *ngIf="ref.status=='unread'" class="badge badge-primary">unread</span>
+        <span *ngIf="ref.status=='rainyDay'" class="badge badge-info">secondary</span>
+      </div>
+      <div class="col-md-1">
+        <a href="{{ref.pdfLink}}" target="_blank" class="badge badge-dark">PDFonline</a>
+      </div>
+      <div class="col-md-1">
+        <button *ngIf="ref.collapseExtraInfos==0" type="button" class="btn btn-outline-secondary" id="toggleExtraInfos_more"
+                (click)="collapseExtraInfos(ref.id)">+</button>
+        <button *ngIf="ref.collapseExtraInfos!=0" type="button" class="btn btn-outline-secondary" id="toggleExtraInfos_less"
+                (click)="collapseExtraInfos(ref.id)">-</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 offset-md-3">
+          <span *ngFor="let k of ref.keywords" class="badge badge-dark">{{k}}</span><p>  </p>
+      </div>
+    </div>
+
+    <div *ngIf="ref.collapseExtraInfos!=0" id="collapseExtraInfos"
+          class="border-right border-bottom border-left border-info rounded" style="padding:10px" >
+      <div class="row">
+        <div class="col-md-3">
+          <h5>Theory:</h5>
+        </div>
+        <div class="col-md-3">
+          <h5>Goal:</h5>
+        </div>
+        <div class="col-md-3">
+          <h5>Study:</h5>
+        </div>
+        <div class="col-md-3">
+          <h5>Findings:</h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          {{ref.theoryDescr}}
+        </div>
+        <div class="col-md-3">
+          {{ref.goalDescr}}
+        </div>
+        <div class="col-md-3">
+          {{ref.studyDescr}}
+          <div class="col-md-12">
+            {{studySetupDescr}}
+          </div>
+          <div class="col-md-12">
+            {{studyParticipantsDescr}}
+          </div>
+          <div class="col-md-12">
+            {{studyMetricsDescr}}
+          </div>
+          <div class="col-md-12">
+            {{studyCaseDescr}}
+          </div>
+        </div>
+        <div class="col-md-3">
+          {{ref.findDescr}}
+        </div>
+      </div>
+    </div>
+
+
+    <hr/>
   </div>
 
-  <h1>YOUR REFERENCES</h1>
+
 
 
 </div>
 
+
+
+
+
+
+<!-- NAVBAR BOTTOM -->
+
+<hr/>
+<hr/>
+<hr/>
+<hr/>
+<hr/>
+<hr/>
+
+<nav class="navbar fixed-bottom navbar-dark bg-dark" *ngIf="result && name">
+  <!-- Left -->
+  <span class="navbar-text">
+
+  </span>
+  <!-- Center -->
+  <span class="navbar-text">
+    <a class="btn btn-secondary" data-toggle="modal" data-target="#addModal" id="prev_question_button">Add Reference</a>
+  </span>
+  <!-- Right -->
+  <span class="navbar-text">
+
+  </span>
+
+</nav>
+
+
+
+
+
+
+
+
+<!-- Adding New Reference Modal -->
+<div class="modal fade bd-example-modal-xl" id="addModal" tabindex="-1" role="dialog" aria-labelledby="logoutConfirmation" aria-hidden="true">
+  <div class="modal-dialog  modal-xl" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutConfirmation">Add Reference to Base</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form>
+
+          <div class="form-row">
+            <div class="col md-12">
+              <label for="newRef_title">Title</label>
+              <input type="text" class="form-control" id="newRef_title"
+                     [(ngModel)]="newReference.title" name="newRef_title" placeholder="The Title of the Paper">
+            </div>
+          </div>
+          <hr/>
+
+          <div class="form-row">
+            <div class="col md-6">
+              <label for="newRef_conference">Conference</label>
+              <input type="text" class="form-control" id="newRef_conference"
+                     [(ngModel)]="newReference.conference" name="newRef_conference" placeholder="Conference Acronym">
+            </div>
+            <div class="col md-6">
+              <label for="newRef_pdfLink">PDF Link (online)</label>
+              <input type="text" class="form-control" id="newRef_pdfLink"
+                     [(ngModel)]="newReference.pdfLink" name="newRef_pdfLink" placeholder="www.domain.com/papernumber.pdf">
+            </div>
+          </div>
+          <hr/>
+
+          <div class="form-row">
+            <div class="col md-3">
+              <label for="newRef_year">Year</label>
+              <input type="text" class="form-control" id="newRef_year"
+                     [(ngModel)]="newReference.year" name="newRef_year" placeholder="1900">
+            </div>
+            <div class="col md-3">
+              <label for="newRef_numPage"># of Pages</label>
+              <input type="text" class="form-control" id="newRef_numPage"
+                     [(ngModel)]="newReference.numPage" name="newRef_numPage" placeholder="4">
+            </div>
+            <div class="col md-6">
+              <label for="newRef_firstAuthor">First Author Last Name</label>
+              <input type="text" class="form-control" id="newRef_firstAuthor"
+                     [(ngModel)]="newReference.firstAuthor" name="newRef_firstAuthor" placeholder="Hickson">
+            </div>
+          </div>
+          <hr/>
+
+          <div class="form-row">
+            <div class="col md-12">
+              <label for="newRef_apaRef">APA Reference</label>
+              <input type="text" class="form-control" id="newRef_apaRef"
+                     [(ngModel)]="newReference.apaRef" name="newRef_apaRef" placeholder="Copy-Paste full APA reference">
+            </div>
+          </div>
+          <hr/>
+
+          <div class="form-row">
+            <div class="col md-12">
+              <label for="newRef_bibtexRef">BibTeX Reference</label>
+              <input type="text" class="form-control" id="newRef_bibtexRef"
+                     [(ngModel)]="newReference.bibtexRef" name="newRef_bibtexRef" placeholder="Copy-Paste full BibTeX reference">
+            </div>
+          </div>
+          <hr/>
+
+          <div class="form-row">
+            <div class="d-flex align-items-bottom justify-content-bottom col md-3">
+              <label for="newRef_keywords1">Keywords</label>
+              <input type="text" class="form-control" id="newRef_keywords1"
+                     [(ngModel)]="newReference.keywords[0]" name="newRef_keywords1" placeholder="keyword">
+            </div>
+            <div class="d-flex align-items-bottom justify-content-bottom col md-3">
+              <input type="text" class="form-control" id="newRef_keywords2"
+                     [(ngModel)]="newReference.keywords[1]" name="newRef_keywords2" placeholder="keyword">
+            </div>
+            <div class="d-flex align-items-bottom justify-content-bottom col md-3">
+              <input type="text" class="form-control" id="newRef_keywords3"
+                     [(ngModel)]="newReference.keywords[2]" name="newRef_keywords3" placeholder="keyword">
+            </div>
+            <div class="d-flex align-items-bottom justify-content-bottom col md-3">
+              <input type="text" class="form-control" id="newRef_keywords4"
+                     [(ngModel)]="newReference.keywords[3]" name="newRef_keywords4" placeholder="keyword">
+            </div>
+          </div>
+          <hr/>
+
+          <div class="form-row">
+            <div class="col md-4">
+              <label for="selectStatus">Status</label>
+              <select class="custom-select" id="selectStatus"
+                      [(ngModel)]="newReference.status" name="selectStatus">
+                <option value="read">Read</option>
+                <option value="unread">Unread</option>
+                <option value="rainyDay">Secondary</option>
+              </select>
+            </div>
+            <div class="col md-4">
+              <label for="selectPrinted">Printed</label>
+              <select class="custom-select" id="selectPrinted"
+                      [(ngModel)]="newReference.printed" name="selectPrinted">
+                <option value="printed">Yes</option>
+                <option value="unprinted">No</option>
+              </select>
+            </div>
+          </div>
+          <hr/>
+
+          <div class="form-row">
+            <div class="col md-12">
+              <label for="newRef_goalDescr">Paper Goal</label>
+              <input type="text" class="form-control" id="newRef_goalDescr"
+                     [(ngModel)]="newReference.goalDescr" name="newRef_goalDescr">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col md-12">
+              <label for="newRef_theoryDescr">Theory</label>
+              <input type="text" class="form-control" id="newRef_theoryDescr"
+                     [(ngModel)]="newReference.theoryDescr" name="newRef_theoryDescr">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col md-12">
+              <label for="newRef_studySetupDescr">Study Setup</label>
+              <input type="text" class="form-control" id="newRef_studySetupDescr"
+                     [(ngModel)]="newReference.studySetupDescr" name="newRef_studySetupDescr">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col md-12">
+              <label for="newRef_studyParticipantsDescr">Study Participants</label>
+              <input type="text" class="form-control" id="newRef_studyParticipantsDescr"
+                     [(ngModel)]="newReference.studyParticipantsDescr" name="newRef_studyParticipantsDescr">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col md-12">
+              <label for="newRef_studyCaseDescr">Study Use Case</label>
+              <input type="text" class="form-control" id="newRef_studyCaseDescr"
+                     [(ngModel)]="newReference.studyCaseDescr" name="newRef_studyCaseDescr">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col md-12">
+              <label for="newRef_studyMetricsDescr">Study Metrics</label>
+              <input type="text" class="form-control" id="newRef_studyMetricsDescr"
+                     [(ngModel)]="newReference.studyMetricsDescr" name="newRef_studyMetricsDescr">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col md-12">
+              <label for="newRef_findDescr">Findings</label>
+              <input type="text" class="form-control" id="newRef_findDescr"
+                     [(ngModel)]="newReference.findDescr" name="newRef_findDescr">
+            </div>
+          </div>
+          <hr/>
+
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Discard</button>
+        <button type="button" class="btn btn-success" (click)="addNewReference()" data-dismiss="modal">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

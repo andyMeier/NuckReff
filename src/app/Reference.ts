@@ -19,6 +19,7 @@ export interface IReference {
   findDescr: string;
   theoryDescr: string;
   keywords: Array<string>;
+  collapseExtraInfos: number;
 }
 
 export class Reference implements IReference {
@@ -42,6 +43,7 @@ export class Reference implements IReference {
   findDescr: string;
   theoryDescr: string;
   keywords: Array<string>;
+  collapseExtraInfos: number;
 
   constructor(id: number,
               apaRef: string,
@@ -62,7 +64,8 @@ export class Reference implements IReference {
               studyCaseDescr: string,
               findDescr: string,
               theoryDescr: string,
-              keywords: Array<string>) {
+              keywords: Array<string>,
+              collapseExtraInfos: number) {
     this.id = id;
     this.apaRef = apaRef;
     this.bibtexRef = bibtexRef;
@@ -83,6 +86,7 @@ export class Reference implements IReference {
     this.findDescr = findDescr;
     this.theoryDescr = theoryDescr;
     this.keywords = keywords;
+    this.collapseExtraInfos = collapseExtraInfos;
   }
 
   clone() {
@@ -90,7 +94,7 @@ export class Reference implements IReference {
                         this.status, this.printed, this.pdfLink, this.conference,
                         this.goalDescr, this.studyDescr, this.studySetupDescr,
                         this.studyParticipantsDescr, this.studyMetricsDescr, this.studyCaseDescr,
-                        this.findDescr, this.theoryDescr, this.keywords);
+                        this.findDescr, this.theoryDescr, this.keywords, this.collapseExtraInfos);
   }
 
   static stringify(obj: Reference, delimiter = '$$$'): string {
@@ -114,7 +118,8 @@ export class Reference implements IReference {
       obj.studyCaseDescr.toString() + delimiter +
       obj.findDescr.toString() + delimiter +
       obj.theoryDescr.toString() + delimiter +
-      Reference.serialise(obj.keywords) + '\n'
+      Reference.serialise(obj.keywords) + delimiter +
+      obj.collapseExtraInfos.toString() + '\n'
   }
 
   static serialise(ar, delimiter = ';') {
