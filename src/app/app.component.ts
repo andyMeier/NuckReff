@@ -165,6 +165,10 @@ constructor(private http: HttpClient) {
     }
   }
 
+  modifyReference (id) {
+    this.newReference = this.references[id].clone();
+  }
+
   addNewReference () {
     let nextIndex: number = -1;
     for (let i = 0; i < this.indexAll.length+1; i += 1) {

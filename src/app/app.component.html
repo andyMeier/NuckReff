@@ -137,8 +137,10 @@
         <span *ngIf="ref.status=='read'" class="badge badge-success">read</span>
         <span *ngIf="ref.status=='unread'" class="badge badge-primary">unread</span>
         <span *ngIf="ref.status=='rainyDay'" class="badge badge-info">secondary</span>
+        <span *ngIf="ref.printed=='printed'" class="badge badge-success">printed</span>
+        <span *ngIf="ref.printed=='unprinted'" class="badge badge-info">not printed</span>
       </div>
-      <div class="col-md-1">
+      <div class="col-md-1" *ngIf="ref.pdfLink.length>0">
         <a href="{{ref.pdfLink}}" target="_blank" class="badge badge-dark">PDFonline</a>
       </div>
       <div class="col-md-1">
@@ -195,6 +197,12 @@
         </div>
         <div class="col-md-3">
           {{ref.findDescr}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-1 offset-11">
+          <a class="btn btn-outline-secondary" data-toggle="modal" data-target="#addModal" id="changeRef_button"
+              (click)="modifyReference(ref.id)">Modify</a>
         </div>
       </div>
     </div>
