@@ -6,13 +6,13 @@ import {map} from "rxjs/operators";
 import {db} from "./Database";
 
 @Component({
-selector: 'app-root',
-templateUrl: './app.component.html',
-styleUrls: ['./app.component.css']
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
 
-constructor(private http: HttpClient) {
+  constructor(private http: HttpClient) {
     this.http = http
   }
 
@@ -24,10 +24,9 @@ constructor(private http: HttpClient) {
   loadResult: boolean = false;
   indexAll: Array<number> = [];
   references: Array<IReference> = [];
-  newReference = new Reference (-1, '', '', '', 1900, '', 0, 'rainyDay', 0, '', '', '', '', '', '', '', '', '', '', ["", "", "", ""], 0, 0);
+  newReference: IReference = new Reference(-1, '', '', '', 1900, '', 0, 'rainyDay', 0, '', '', '', '', '', '', '', '', '', '', ["", "", "", ""], 0, 0);
   currentGroup = 0;
   groups = [0];
-
 
 
   fileChanged(e) {
@@ -68,23 +67,23 @@ constructor(private http: HttpClient) {
       this.result = fileReader.result;
       this.processResult(this.result);
       this.loadResult = false;
-      this.copyFromDBToArray ();
+      this.copyFromDBToArray();
     };
     fileReader.readAsText(this.file);
   }
 
-  uploadLocal () {
+  uploadLocal() {
     if (this.resetDB) db.references.clear();
     this.result = "asd";
-    this.copyFromDBToArray ();
+    this.copyFromDBToArray();
   }
 
-  uploadEmpty () {
-      db.references.clear();
-      this.result = "asd";
-    }
+  uploadEmpty() {
+    db.references.clear();
+    this.result = "asd";
+  }
 
-  copyFromDBToArray () {
+  copyFromDBToArray() {
     // get the references that are in the db but not in the array to be added to the array for display on interface
     db.references.toArray().then(res => {
       console.log('successfully started copyFromDBToArray');
@@ -113,7 +112,7 @@ constructor(private http: HttpClient) {
 
   getAllIndices(arr, val) {
     let indices = [];
-    for(let i = 0; i < arr.length; i++) {
+    for (let i = 0; i < arr.length; i++) {
       if (arr[i][0] === val) indices.push(i);
     }
     return indices;
@@ -126,7 +125,7 @@ constructor(private http: HttpClient) {
       return line.split('$$$');
     });
 
-    lines.filter(line => (line.length == 22) ).forEach(line => {
+    lines.filter(line => (line.length == 22)).forEach(line => {
       let ind = 0;
       const id: number = +line[ind];
       const apaRef: string = line[++ind];
@@ -160,34 +159,34 @@ constructor(private http: HttpClient) {
     console.log("done")
   }
 
-  collapseExtraInfos (id) {
+  collapseExtraInfos(id) {
     let currentCollapseState = this.references[this.getIndexInArrayByID(id)].collapseExtraInfos;
-    if (currentCollapseState==0) {
+    if (currentCollapseState == 0) {
       this.references[this.getIndexInArrayByID(id)].collapseExtraInfos = 1;
     } else {
       this.references[this.getIndexInArrayByID(id)].collapseExtraInfos = 0;
     }
   }
 
-  addGroup () {
-    this.groups.push(this.groups[this.groups.length-1]+1);
+  addGroup() {
+    this.groups.push(this.groups[this.groups.length - 1] + 1);
   }
 
-  changeGroup (g) {
+  changeGroup(g) {
     if (this.groups.includes(g)) this.currentGroup = g;
   }
 
-  modifyReference (id) {
-    this.newReference = this.references[this.getIndexInArrayByID(id)].clone();
+  modifyReference(id) {
+    this.newReference = Object.assign({}, this.references[this.getIndexInArrayByID(id)]);
   }
 
-  getIndexInArrayByID (id) {
+  getIndexInArrayByID(id) {
     return this.indexAll.indexOf(id);
   }
 
-  addNewReference () {
+  addNewReference() {
     let nextIndex: number = -1;
-    for (let i = 0; i < this.indexAll.length+1; i += 1) {
+    for (let i = 0; i < this.indexAll.length + 1; i += 1) {
       if (!this.indexAll.includes(i)) {
         nextIndex = i;
       }
@@ -196,12 +195,13 @@ constructor(private http: HttpClient) {
       this.newReference.id = nextIndex;
       this.references.push(this.newReference);
       this.indexAll.push(nextIndex);
-      this.refDB_AddUpdate(this.newReference, true);
+
+      this.refDB_AddUpdate(Object.assign({}, this.newReference), true);
     }
-    this.newReference = new Reference (-1, '', '', '', 1900, '', 0, 'rainyDay', 0, '', '', '', '', '', '', '', '', '', '', ["", "", "", ""], 0, 0);
+    this.newReference = new Reference(-1, '', '', '', 1900, '', 0, 'rainyDay', 0, '', '', '', '', '', '', '', '', '', '', ["", "", "", ""], 0, 0);
   }
 
-  refDB_AddUpdate(refElem: Reference, update = true) {
+  refDB_AddUpdate(refElem: IReference, update = true) {
     let k = db.references.get(refElem.id).then(res => {
       console.log('checking db for reference with id', refElem.id);
       if (!res) {
@@ -222,8 +222,8 @@ constructor(private http: HttpClient) {
     });
   }
 
-  exportData () {
-    this.fileSave ();
+  exportData() {
+    this.fileSave();
   }
 
 }
