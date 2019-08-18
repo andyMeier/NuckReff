@@ -1,0 +1,83 @@
+<!-- Navigation Bar -->
+<nav class="navbar navbar-dark bg-dark" id="top-section">
+  <a class="navbar-brand" href="#"><img src="assets/logo.png" width="32" height="32" alt="AnnoTool"> Annotation Tool</a>
+  <span class="navbar-text" *ngIf="result && name">
+    <h3>You are logged in: {{name}}</h3>
+  </span>
+</nav>
+<hr/>
+
+<!-- Start Screen -->
+<div class="container" *ngIf="!result">
+  <div class="flex-md-row">
+    <h1>Open your NuckReff References:</h1>
+
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">Your Name</span>
+      </div>
+      <input type="text" class="form-control" [(ngModel)]="name" name="personName"
+             placeholder="Please enter your name"
+             aria-label="Your name" aria-describedby="basic-addon1">
+    </div>
+
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon2">Document Path</span>
+      </div>
+      <div class="custom-file">
+        <input type="file" class="custom-file-input" name="fileInput" (change)="fileChanged($event)"
+               id="inputGroupFile01">
+        <label class="custom-file-label" for="inputGroupFile01">Select NuckReffFile</label>
+      </div>
+    </div>
+
+    <div class="custom-control custom-checkbox">
+      <input type="checkbox" class="custom-control-input" id="customCheck1" [(ngModel)]="resetDB" value="check1">
+      <label class="custom-control-label" for="customCheck1">Reset local DB and load only NuckReffFile</label>
+    </div>
+    <hr/>
+
+    <button [attr.disabled]="name.length<=0 ? true: null"
+            type="button" class="btn btn-danger" id="fileuploadbutton" (click)="uploadDocument()">
+      <span class="spinner-border spinner-border-sm" role="status" *ngIf="loadResult"></span>
+      <span *ngIf="!loadResult">Open Your References</span>
+    </button>
+    <hr/>
+    <hr/>
+    <button type="button" class="btn btn-danger" id="fileuploadbutton" (click)="uploadEmpty()">
+      <span *ngIf="!loadResult">Open Empty NuckReff Base</span>
+    </button>
+
+  </div>
+</div>
+
+
+<!-- Annotation Content -->
+<div class="container" *ngIf="result && name">
+  <hr/>
+
+  <form>
+    <div class="form-group">
+      <label for="newReference_Title">Title</label>
+      <input type="text" class="form-control" id="newReference_Title" [(ngModel)]="newReference.title">
+    </div>
+    <div class="form-group">
+      <label for="newReference_Year">Year</label>
+      <input type="text" class="form-control" id="newReference_Year" [(ngModel)]="newReference.year">
+    </div>
+    <div class="form-group">
+      <label for="newReference_APA">APA Reference</label>
+      <input type="text" class="form-control" id="newReference_APA" [(ngModel)]="newReference.apaRef">
+    </div>
+  </form>
+
+  <div class="row" *ngFor="let ref of references" name="availableReferencesDiv">
+    {{ref.id}}, {{ref.title}}, {{ref.year}}, {{ref.firstAuthor}}
+  </div>
+
+  <h1>YOUR REFERENCES</h1>
+
+
+</div>
+
