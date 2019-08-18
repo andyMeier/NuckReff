@@ -184,20 +184,30 @@ export class AppComponent implements OnInit {
     return this.indexAll.indexOf(id);
   }
 
+  deleteReference(id) {
+    db.references.delete(id);
+    let objectIDInArray = this.getIndexInArrayByID(id);
+    this.references.splice(objectIDInArray, 1);
+    this.indexAll.splice(objectIDInArray, 1);
+  }
+
   addNewReference() {
-    let nextIndex: number = -1;
-    for (let i = 0; i < this.indexAll.length + 1; i += 1) {
-      if (!this.indexAll.includes(i)) {
-        nextIndex = i;
+    if (this.newReference.id<0) {
+      // if new Reference
+      let nextIndex: number = -1;
+      for (let i = 0; i < this.indexAll.length + 1; i += 1) {
+        if (!this.indexAll.includes(i)) {
+          nextIndex = i;
+        }
       }
-    }
-    if (nextIndex >= 0) {
       this.newReference.id = nextIndex;
       this.references.push(this.newReference);
       this.indexAll.push(nextIndex);
-
-      this.refDB_AddUpdate(Object.assign({}, this.newReference), true);
+    } else {
+      // if Reference Update
+      this.references[this.getIndexInArrayByID(this.newReference.id)] = this.newReference;
     }
+    this.refDB_AddUpdate(Object.assign({}, this.newReference), true);
     this.newReference = new Reference(-1, '', '', '', 1900, '', 0, 'rainyDay', 0, '', '', '', '', '', '', '', '', '', '', ["", "", "", ""], 0, 0);
   }
 
