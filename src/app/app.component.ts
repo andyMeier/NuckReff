@@ -157,16 +157,20 @@ constructor(private http: HttpClient) {
   }
 
   collapseExtraInfos (id) {
-    let currentCollapseState = this.references[id].collapseExtraInfos;
+    let currentCollapseState = this.references[this.getIndexInArrayByID(id)].collapseExtraInfos;
     if (currentCollapseState==0) {
-      this.references[id].collapseExtraInfos = 1;
+      this.references[this.getIndexInArrayByID(id)].collapseExtraInfos = 1;
     } else {
-      this.references[id].collapseExtraInfos = 0;
+      this.references[this.getIndexInArrayByID(id)].collapseExtraInfos = 0;
     }
   }
 
   modifyReference (id) {
-    this.newReference = this.references[id].clone();
+    this.newReference = this.references[this.getIndexInArrayByID(id)].clone();
+  }
+
+  getIndexInArrayByID (id) {
+    return this.indexAll.indexOf(id);
   }
 
   addNewReference () {
