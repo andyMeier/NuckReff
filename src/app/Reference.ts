@@ -20,6 +20,7 @@ export interface IReference {
   theoryDescr: string;
   keywords: Array<string>;
   collapseExtraInfos: number;
+  group: number;
 }
 
 export class Reference implements IReference {
@@ -44,6 +45,7 @@ export class Reference implements IReference {
   theoryDescr: string;
   keywords: Array<string>;
   collapseExtraInfos: number;
+  group: number;
 
   constructor(id: number,
               apaRef: string,
@@ -65,7 +67,8 @@ export class Reference implements IReference {
               findDescr: string,
               theoryDescr: string,
               keywords: Array<string>,
-              collapseExtraInfos: number) {
+              collapseExtraInfos: number,
+              group: number) {
     this.id = id;
     this.apaRef = apaRef;
     this.bibtexRef = bibtexRef;
@@ -87,6 +90,7 @@ export class Reference implements IReference {
     this.theoryDescr = theoryDescr;
     this.keywords = keywords;
     this.collapseExtraInfos = collapseExtraInfos;
+    this.group = group;
   }
 
   clone() {
@@ -94,7 +98,7 @@ export class Reference implements IReference {
                         this.status, this.printed, this.pdfLink, this.conference,
                         this.goalDescr, this.studyDescr, this.studySetupDescr,
                         this.studyParticipantsDescr, this.studyMetricsDescr, this.studyCaseDescr,
-                        this.findDescr, this.theoryDescr, this.keywords, this.collapseExtraInfos);
+                        this.findDescr, this.theoryDescr, this.keywords, this.collapseExtraInfos, this.group);
   }
 
   static stringify(obj: Reference, delimiter = '$$$'): string {
@@ -119,7 +123,8 @@ export class Reference implements IReference {
       obj.findDescr.toString() + delimiter +
       obj.theoryDescr.toString() + delimiter +
       Reference.serialise(obj.keywords) + delimiter +
-      obj.collapseExtraInfos.toString() + '\n'
+      obj.collapseExtraInfos.toString() + delimiter +
+      obj.group.toString() + '\n''\n'
   }
 
   static serialise(ar, delimiter = ';') {

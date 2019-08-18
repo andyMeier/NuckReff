@@ -9,7 +9,7 @@ class AppDatabase extends Dexie {
 
     this.version(1).stores(
       {
-        references: 'id, apaRef, bibtexRef, title, year, firstAuthor, numPage, status, printed, pdfLink, conference, goalDescr, studyDescr, studySetupDescr, studyParticipantsDescr, studyMetricsDescr, studyCaseDescr, findDescr, theoryDescr, keywords'
+        references: 'id, apaRef, bibtexRef, title, year, firstAuthor, numPage, status, printed, pdfLink, conference, goalDescr, studyDescr, studySetupDescr, studyParticipantsDescr, studyMetricsDescr, studyCaseDescr, findDescr, theoryDescr, keywords, collapseExtraInfos, group'
       }
     );
 

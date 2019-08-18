@@ -24,7 +24,7 @@ constructor(private http: HttpClient) {
   loadResult: boolean = false;
   indexAll: Array<number> = [];
   references: Array<IReference> = [];
-  newReference = new Reference (-1, '', '', '', 1900, '', 0, 'rainyDay', 0, '', '', '', '', '', '', '', '', '', '', ["", "", "", ""], 0);
+  newReference = new Reference (-1, '', '', '', 1900, '', 0, 'rainyDay', 0, '', '', '', '', '', '', '', '', '', '', ["", "", "", ""], 0, 0);
 
 
   fileChanged(e) {
@@ -123,7 +123,7 @@ constructor(private http: HttpClient) {
       return line.split('$$$');
     });
 
-    lines.filter(line => (line.length == 21) ).forEach(line => {
+    lines.filter(line => (line.length == 22) ).forEach(line => {
       let ind = 0;
       const id: number = +line[ind];
       const apaRef: string = line[++ind];
@@ -146,8 +146,9 @@ constructor(private http: HttpClient) {
       const theoryDescr: string = line[++ind];
       const keywords: Array<string> = line[++ind].split(';');
       const collapseExtraInfos: number = +line[++ind];
+      const group: number = +line[++ind];
 
-      const currReference = new Reference(id, apaRef, bibtexRef, title, year, firstAuthor, numPage, status, printed, pdfLink, conference, goalDescr, studyDescr, studySetupDescr, studyParticipantsDescr, studyMetricsDescr, studyCaseDescr, findDescr, theoryDescr, keywords, collapseExtraInfos);
+      const currReference = new Reference(id, apaRef, bibtexRef, title, year, firstAuthor, numPage, status, printed, pdfLink, conference, goalDescr, studyDescr, studySetupDescr, studyParticipantsDescr, studyMetricsDescr, studyCaseDescr, findDescr, theoryDescr, keywords, collapseExtraInfos, group);
       this.references.push(currReference); // add to array
       this.indexAll.push(id); // add id to list of ids
       this.refDB_AddUpdate(currReference); // add to db
@@ -186,7 +187,7 @@ constructor(private http: HttpClient) {
       this.indexAll.push(nextIndex);
       this.refDB_AddUpdate(this.newReference, true);
     }
-    this.newReference = new Reference (-1, '', '', '', 1900, '', 0, 'rainyDay', 0, '', '', '', '', '', '', '', '', '', '', ["", "", "", ""], 0);
+    this.newReference = new Reference (-1, '', '', '', 1900, '', 0, 'rainyDay', 0, '', '', '', '', '', '', '', '', '', '', ["", "", "", ""], 0, 0);
   }
 
   refDB_AddUpdate(refElem: Reference, update = true) {
