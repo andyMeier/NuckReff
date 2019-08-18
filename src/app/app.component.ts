@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Reference} from './Reference';
+import {IReference, Reference} from './Reference';
 import * as FileSaver from "file-saver";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {map} from "rxjs/operators";
@@ -23,7 +23,7 @@ constructor(private http: HttpClient) {
   result: any;
   loadResult: boolean = false;
   indexAll: Array<number> = [];
-  references: Array<Reference> = [];
+  references: Array<IReference> = [];
   newReference = new Reference (-1, '', '', '', 1900, '', 0, 'rainyDay', 0, '', '', '', '', '', '', '', '', '', '', []);
 
 
@@ -35,7 +35,7 @@ constructor(private http: HttpClient) {
   fileSave() {
     db.references.toArray().then(res => {
       let outputStrAr = [];
-      let notInDbReferences: Array<Reference> = this.references.filter(q => res.filter(q1 => q1.id == q.id).length == 0);
+      let notInDbReferences: Array<IReference> = this.references.filter(q => res.filter(q1 => q1.id == q.id).length == 0);
       let allRs = res.concat(notInDbReferences).map(refs => Reference.stringify(<Reference>refs));
       const blob = new Blob(allRs, {type: "text/plain;charset=utf-8"});
       FileSaver.saveAs(blob, "NuckReffFile_" + new Date().toLocaleString() + ".txt");
