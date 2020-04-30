@@ -29,7 +29,7 @@
     "dateformat": "^3.0.3",
     "dexie": "^2.0.4",
     "file-saver": "^2.0.2",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "ng5-slider": "^1.1.14",
     "ngx-bootstrap": "^3.3.0",
     "popper.js": "^1.15.0",
