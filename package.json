@@ -27,7 +27,7 @@
     "bootstrap-slider": "^10.6.1",
     "core-js": "^2.6.5",
     "dateformat": "^3.0.3",
-    "dexie": "^2.0.4",
+    "dexie": "^3.2.2",
     "file-saver": "^2.0.2",
     "jquery": "^3.4.1",
     "ng5-slider": "^1.1.14",
